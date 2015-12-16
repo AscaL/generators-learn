@@ -1,21 +1,27 @@
-module: {
-  loaders: [
-    {
-      loader: "babel-loader",
+var path = require('path');
+var webpack = require('webpack');
 
-      // Skip any files outside of your project's `src` directory
-      include: [
-        path.resolve(__dirname, "es6"),
-      ],
-
-      // Only run `.js` and `.jsx` files through Babel
-      test: /\.jsx?$/,
-
-      // Options to configure babel with
-      query: {
-        // plugins: ['transform-runtime'],
-        presets: ['es2015', 'stage-0'],
+module.exports = {
+	entry: [
+    'babel-polyfill',
+    './es6/index'
+  ],
+	output: {
+		publicPath: '/',
+		filename: './es5/index.js'
+	},
+	//	devtool: 'source-map',
+	module: {
+		loaders: [
+			{
+				test: /\.js$/,
+				include: path.join(__dirname, 'es6'),
+				loader: 'babel-loader',
+				query: {
+					presets: ["es2015", "stage-0"],
+				}
       }
-    },
-  ]
-}
+    ]
+	},
+	debug: true
+};
