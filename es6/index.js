@@ -17,15 +17,15 @@ console.log(gen.next());
 console.log(gen.next());
 console.log(gen.next());
 
-function *getFib() {
+function* getFib() {
 	let val1 = 0;
 	let val2 = 1;
 	let swap;
-	
+
 	yield val1;
-	
+
 	yield val2;
-	
+
 	while (true) {
 		swap = val1 + val2;
 		val2 = swap;
@@ -34,11 +34,11 @@ function *getFib() {
 	}
 }
 
-for (var x of [12,13,14]) {
+for (var x of[12, 13, 14]) {
 	console.log(x);
 }
 
-function *getStockPrice(name) {
+function* getStockPrice(name) {
 	console.log('name:', name);
 	var symbol = yield getSymbol(name)
 	console.log('symbol:', symbol);
@@ -47,24 +47,40 @@ function *getStockPrice(name) {
 }
 
 function getSymbol(name) {
-	return name + " from getSymbol";
+	setTimeout(function () {
+		console.log('in GetSymbol');
+		return {value: name + " from getSymbol", done: false};
+	}, 200)
 }
 
 function getPrice(symbol) {
-	return symbol + " from getPrice";
+	setTimeout(function () {
+		console.log('In GetPrice');
+		return {value: symbol + " from getSymbol", done: false};
+	}, 200)
 }
 
 function spawn(generator) {
 	return new Promise((accept, reject) => {
 		var onResult = lastPromiseResult => {
+			console.log('in onResult');
+			console.log('lastPromiseResult:', lastPromiseResult);
 			var {value, done} = generator.next(lastPromiseResult);
+			console.log('done:', done);
 			if (!done) {
+				console.log('here!');
 				value.then(onResult, reject)
+			} else {
+				console.log('done:', done);
+				accept(value);
 			}
-			else accept(value);
 		};
 		onResult();
 	})
 }
 
 spawn(getStockPrice("name")).then(console.log);
+
+//var result = spawn(getStockPrice.bind(null, "HOLYFUCK"));
+//
+//result.then(console.log, console.error)
