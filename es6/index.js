@@ -1,5 +1,7 @@
 'use strict';
 
+import { Map } from 'immutable';
+
 function* generator() {
 	yield 1;
 	yield 2;
